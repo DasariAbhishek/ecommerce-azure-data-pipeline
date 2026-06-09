@@ -1,0 +1,16 @@
+# Core engine (Databricks-aligned)
+pyspark==3.5.1
+
+# Synthetic data generation
+Faker==25.2.0
+
+# Config & utilities
+PyYAML==6.0.1
+python-dotenv==1.0.1
+
+# Local serving layer (Synapse / SQL warehouse equivalent)
+duckdb==1.0.0
+
+# Testing & quality
+pytest==8.2.1
+chispa==0.10.1

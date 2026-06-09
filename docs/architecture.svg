@@ -1,0 +1,77 @@
+<svg viewBox="0 0 1120 560" xmlns="http://www.w3.org/2000/svg" font-family="ui-sans-serif, system-ui, Segoe UI, Roboto, sans-serif" role="img">
+<title>E-commerce medallion data pipeline architecture</title>
+<desc>Source systems land raw files which flow through Bronze, Silver (with a data quality gate), and Gold layers in a lakehouse, then to a warehouse and BI.</desc>
+<rect x="0" y="0" width="1120" height="560" fill="#ffffff"/>
+<defs>
+<marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+<path d="M0,0 L7,3 L0,6 z" fill="#888888"/>
+</marker>
+</defs>
+
+<text x="560" y="38" text-anchor="middle" font-size="24" font-weight="700" fill="#1a1a1a">E-Commerce Sales Analytics — Medallion Pipeline</text>
+<text x="560" y="62" text-anchor="middle" font-size="14" fill="#666666">Runnable locally (Spark + DuckDB) · deployable to Azure (ADF · Databricks · ADLS Gen2 · Synapse)</text>
+
+<text x="95" y="110" text-anchor="middle" font-size="13" font-weight="600" fill="#666666">SOURCE SYSTEMS</text>
+<g font-size="13" fill="#1a1a1a">
+<rect x="20" y="130" width="150" height="48" rx="8" fill="#ffffff" stroke="#cccccc"/>
+<text x="95" y="150" text-anchor="middle" font-weight="600">CRM</text>
+<text x="95" y="168" text-anchor="middle" font-size="11" fill="#666666">customers.csv</text>
+<rect x="20" y="186" width="150" height="48" rx="8" fill="#ffffff" stroke="#cccccc"/>
+<text x="95" y="206" text-anchor="middle" font-weight="600">PIM</text>
+<text x="95" y="224" text-anchor="middle" font-size="11" fill="#666666">products.csv</text>
+<rect x="20" y="242" width="150" height="48" rx="8" fill="#ffffff" stroke="#cccccc"/>
+<text x="95" y="262" text-anchor="middle" font-weight="600">OMS</text>
+<text x="95" y="280" text-anchor="middle" font-size="11" fill="#666666">orders.json</text>
+</g>
+
+<rect x="210" y="92" width="640" height="300" rx="12" fill="none" stroke="#cccccc" stroke-dasharray="4 4"/>
+<text x="230" y="114" font-size="13" font-weight="700" fill="#666666">MEDALLION LAKEHOUSE</text>
+
+<rect x="232" y="150" width="170" height="150" rx="10" fill="#b06a2c"/>
+<text x="317" y="180" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">BRONZE</text>
+<text x="317" y="206" text-anchor="middle" font-size="12" fill="#fbe9da">raw &amp; immutable</text>
+<text x="317" y="226" text-anchor="middle" font-size="12" fill="#fbe9da">+ audit columns</text>
+<text x="317" y="252" text-anchor="middle" font-size="11" fill="#fbe9da">Parquet / Delta</text>
+
+<rect x="432" y="150" width="170" height="150" rx="10" fill="#8a8f98"/>
+<text x="517" y="180" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">SILVER</text>
+<text x="517" y="204" text-anchor="middle" font-size="12" fill="#f1f2f4">clean · dedupe</text>
+<text x="517" y="222" text-anchor="middle" font-size="12" fill="#f1f2f4">typecast · explode</text>
+<text x="517" y="252" text-anchor="middle" font-size="11" fill="#f1f2f4">conformed tables</text>
+
+<rect x="650" y="150" width="178" height="150" rx="10" fill="#c79a25"/>
+<text x="739" y="180" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">GOLD</text>
+<text x="739" y="204" text-anchor="middle" font-size="12" fill="#fbf2d6">star schema</text>
+<text x="739" y="222" text-anchor="middle" font-size="12" fill="#fbf2d6">dims + fact_sales</text>
+<text x="739" y="252" text-anchor="middle" font-size="11" fill="#fbf2d6">business marts</text>
+
+<rect x="455" y="316" width="124" height="40" rx="20" fill="#ffffff" stroke="#2563eb" stroke-width="1.5"/>
+<text x="517" y="340" text-anchor="middle" font-size="12" font-weight="600" fill="#2563eb">Data Quality Gate</text>
+
+<rect x="890" y="160" width="200" height="60" rx="10" fill="#ffffff" stroke="#888888"/>
+<text x="990" y="185" text-anchor="middle" font-size="14" font-weight="700" fill="#1a1a1a">Warehouse</text>
+<text x="990" y="204" text-anchor="middle" font-size="11" fill="#666666">DuckDB / Synapse</text>
+
+<rect x="890" y="246" width="200" height="56" rx="10" fill="#ffffff" stroke="#cccccc"/>
+<text x="990" y="271" text-anchor="middle" font-size="14" font-weight="700" fill="#1a1a1a">BI / Power BI</text>
+<text x="990" y="289" text-anchor="middle" font-size="11" fill="#666666">dashboards &amp; reports</text>
+
+<g stroke="#888888" stroke-width="1.6" fill="none" marker-end="url(#arr)">
+<path d="M170 154 C 195 158, 200 200, 230 215"/>
+<path d="M170 210 L 230 222"/>
+<path d="M170 266 C 195 262, 200 235, 230 228"/>
+<path d="M402 225 L 430 225"/>
+<path d="M602 225 L 648 225"/>
+<path d="M828 200 L 888 190"/>
+<path d="M990 220 L 990 244"/>
+</g>
+
+<g font-size="12">
+<rect x="232" y="416" width="596" height="64" rx="10" fill="#ffffff" stroke="#cccccc"/>
+<text x="250" y="438" font-weight="700" fill="#666666">ORCHESTRATION &amp; COMPUTE</text>
+<text x="250" y="460" fill="#1a1a1a">Local: pipeline.py · Spark local[*]</text>
+<text x="250" y="476" fill="#1a1a1a">Azure: Data Factory · Databricks · Key Vault</text>
+<text x="560" y="460" fill="#1a1a1a">CI: GitHub Actions (tests + smoke run)</text>
+<text x="560" y="476" fill="#1a1a1a">IaC: Bicep / Terraform</text>
+</g>
+</svg>

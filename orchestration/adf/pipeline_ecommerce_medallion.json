@@ -1,0 +1,65 @@
+{
+  "name": "pl_ecommerce_medallion",
+  "properties": {
+    "description": "Orchestrates the e-commerce medallion pipeline: ingest raw sources to Bronze, then run Databricks notebooks for Silver and Gold, with a data-quality gate in between.",
+    "activities": [
+      {
+        "name": "Copy_Sources_To_Bronze",
+        "type": "Copy",
+        "policy": { "timeout": "0.02:00:00", "retry": 2 },
+        "typeProperties": {
+          "source": { "type": "DelimitedTextSource" },
+          "sink": { "type": "ParquetSink" }
+        },
+        "inputs": [{ "referenceName": "ds_landing", "type": "DatasetReference" }],
+        "outputs": [{ "referenceName": "ds_bronze", "type": "DatasetReference" }]
+      },
+      {
+        "name": "Bronze_To_Silver",
+        "type": "DatabricksNotebook",
+        "dependsOn": [
+          { "activity": "Copy_Sources_To_Bronze", "dependencyConditions": ["Succeeded"] }
+        ],
+        "policy": { "timeout": "0.02:00:00", "retry": 1 },
+        "typeProperties": {
+          "notebookPath": "/Repos/ecommerce/notebooks/01_bronze_to_silver",
+          "baseParameters": { "env": "@pipeline().globalParameters.env" }
+        },
+        "linkedServiceName": { "referenceName": "ls_databricks", "type": "LinkedServiceReference" }
+      },
+      {
+        "name": "Data_Quality_Gate",
+        "type": "DatabricksNotebook",
+        "dependsOn": [
+          { "activity": "Bronze_To_Silver", "dependencyConditions": ["Succeeded"] }
+        ],
+        "typeProperties": {
+          "notebookPath": "/Repos/ecommerce/notebooks/02_quality_checks"
+        },
+        "linkedServiceName": { "referenceName": "ls_databricks", "type": "LinkedServiceReference" }
+      },
+      {
+        "name": "Silver_To_Gold",
+        "type": "DatabricksNotebook",
+        "dependsOn": [
+          { "activity": "Data_Quality_Gate", "dependencyConditions": ["Succeeded"] }
+        ],
+        "typeProperties": {
+          "notebookPath": "/Repos/ecommerce/notebooks/03_silver_to_gold"
+        },
+        "linkedServiceName": { "referenceName": "ls_databricks", "type": "LinkedServiceReference" }
+      },
+      {
+        "name": "Refresh_Synapse_Serving",
+        "type": "SqlServerStoredProcedure",
+        "dependsOn": [
+          { "activity": "Silver_To_Gold", "dependencyConditions": ["Succeeded"] }
+        ],
+        "typeProperties": { "storedProcedureName": "dbo.usp_refresh_marts" },
+        "linkedServiceName": { "referenceName": "ls_synapse", "type": "LinkedServiceReference" }
+      }
+    ],
+    "globalParameters": { "env": { "type": "String", "value": "dev" } },
+    "annotations": ["ecommerce", "medallion", "portfolio"]
+  }
+}

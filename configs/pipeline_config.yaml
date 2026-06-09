@@ -1,0 +1,32 @@
+# ---------------------------------------------------------------------------
+# Pipeline configuration
+# In Azure these paths map to ADLS Gen2 containers (abfss://bronze@...).
+# Locally they map to folders under ./data/lakehouse so the project runs
+# end-to-end on any laptop with zero cloud dependencies.
+# ---------------------------------------------------------------------------
+
+project_name: "ecommerce-azure-data-pipeline"
+
+paths:
+  landing: "data/landing"            # raw drop zone (source systems export here)
+  bronze: "data/lakehouse/bronze"    # ADLS container: bronze  (raw, immutable)
+  silver: "data/lakehouse/silver"    # ADLS container: silver  (cleaned, conformed)
+  gold: "data/lakehouse/gold"        # ADLS container: gold    (business marts)
+  warehouse: "data/lakehouse/ecommerce.duckdb"  # serving layer (Synapse equiv.)
+
+# Synthetic data generation knobs
+data_generation:
+  seed: 42
+  num_customers: 2000
+  num_products: 300
+  num_orders: 15000
+  start_date: "2024-01-01"
+  end_date: "2024-12-31"
+  # % of rows intentionally dirtied so data-quality logic has something to catch
+  dirty_ratio: 0.04
+
+# Data quality thresholds — pipeline fails fast if violated
+quality:
+  fail_on_error: true
+  max_null_ratio: 0.02
+  min_rows_silver_orders: 10000
